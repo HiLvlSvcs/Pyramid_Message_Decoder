@@ -6,7 +6,7 @@ def decode(message_file_path):
     message_file_path: Path to the text file containing the encoded message.
 
   Returns:
-    Decoded message as a string.
+    Decoded message as a string, or None if the pyramid structure is invalid.
   """
   with open(message_file_path, 'r') as f:
     lines = f.readlines()
@@ -20,15 +20,17 @@ def decode(message_file_path):
   # Construct the decoded message by reading words at the end of pyramid levels
   message = ""
   current_level = 1
-  while True:
-    for _ in range(current_level):
-      if current_level not in word_map:
-        return None  # Missing word in pyramid structure
-      message += word_map[current_level]
+  while current_level in word_map:
+    message += word_map[current_level]
     current_level += 1
 
-  return message
+  # Check if all levels had corresponding words
+  if current_level > 1:
+    return message
+  else:
+    return None
 
 # Example usage
-decoded_message = decode("message.txt")  # Replace "message.txt" with your file path
+decoded_message = decode("message.txt") 
 print(decoded_message)
+
